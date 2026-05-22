@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AI Product Descriptor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&family=DM+Mono:wght@400&display=swap" rel="stylesheet" />
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #f7f6f3;
+  --surface: #ffffff;
+  --surface2: #f0efe9;
+  --border: #e2e0d8;
+  --border2: #ccc9be;
+  --text: #1a1917;
+  --text2: #6b6860;
+  --text3: #a09e97;
+  --accent: #1a1917;
+  --accent-fg: #ffffff;
+  --success: #2d7a4f;
+  --danger: #c0392b;
+  --tag-bg: #eeecea;
+  --tag-border: #dddbd3;
+  --font: 'DM Sans', sans-serif;
+  --mono: 'DM Mono', monospace;
+  --radius: 10px;
+  --radius-lg: 14px;
+  --radius-pill: 999px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #141412;
+    --surface: #1e1d1b;
+    --surface2: #252420;
+    --border: #2e2d29;
+    --border2: #3d3c37;
+    --text: #f0efe9;
+    --text2: #908e87;
+    --text3: #5a5850;
+    --accent: #f0efe9;
+    --accent-fg: #141412;
+    --success: #4caf7d;
+    --danger: #e05c4b;
+    --tag-bg: #252420;
+    --tag-border: #2e2d29;
+  }
+}
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.page {
+  max-width: 660px;
+  margin: 0 auto;
+  padding: 3rem 1.25rem 4rem;
+}
+
+.header {
+  margin-bottom: 2.5rem;
+}
+.header h1 {
+  font-size: 22px;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 4px;
+  letter-spacing: -0.3px;
+}
+.header p {
+  font-size: 14px;
+  color: var(--text2);
+}
+
+/* API Key section */
+.apikey-section {
+  background: var(--surface);
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 14px 16px;
+  margin-bottom: 1.5rem;
+}
+.apikey-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.apikey-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text2);
+}
+.apikey-status {
+  font-size: 12px;
+  color: var(--text3);
+}
+.apikey-status.own { color: var(--success); }
+.apikey-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.apikey-input {
+  flex: 1;
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 8px 12px;
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface2);
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.15s;
+}
+.apikey-input:focus { border-color: var(--border2); }
+.apikey-input::placeholder { color: var(--text3); }
+.apikey-save-btn {
+  padding: 8px 16px;
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface2);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 13px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s;
+}
+.apikey-save-btn:hover { border-color: var(--border2); }
+.apikey-clear-btn {
+  padding: 8px 12px;
+  border: none;
+  background: none;
+  color: var(--text3);
+  font-size: 13px;
+  cursor: pointer;
+  font-family: var(--font);
+  transition: color 0.15s;
+}
+.apikey-clear-btn:hover { color: var(--danger); }
+.apikey-hint {
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--text3);
+}
+.apikey-hint a { color: var(--text2); text-decoration: underline; }
+
+/* Lang toggle */
+.lang-toggle {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 1.5rem;
+}
+.lang-btn {
+  padding: 6px 16px;
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: transparent;
+  font-size: 13px;
+  font-family: var(--font);
+  cursor: pointer;
+  color: var(--text2);
+  transition: all 0.15s;
+}
+.lang-btn.active {
+  background: var(--accent);
+  color: var(--accent-fg);
+  border-color: var(--accent);
+}
+
+/* Upload zone */
+.upload-zone {
+  border: 1.5px dashed var(--border2);
+  border-radius: var(--radius-lg);
+  padding: 2.5rem 1.5rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-bottom: 1.5rem;
+  background: var(--surface);
+  position: relative;
+  overflow: hidden;
+}
+.upload-zone:hover, .upload-zone.drag {
+  border-color: var(--text2);
+  background: var(--surface2);
+}
+.upload-zone.has-img {
+  padding: 0;
+  border-style: solid;
+  border-color: var(--border);
+}
+.upload-zone img {
+  width: 100%;
+  max-height: 300px;
+  object-fit: contain;
+  display: block;
+  border-radius: calc(var(--radius-lg) - 1.5px);
+}
+.upload-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #fff;
+  font-size: 14px;
+  border-radius: var(--radius-lg);
+}
+.upload-zone.has-img:hover .upload-overlay { display: flex; }
+.upload-icon {
+  font-size: 2rem;
+  margin-bottom: 10px;
+  color: var(--text3);
+}
+.upload-label { font-size: 14px; color: var(--text2); }
+.upload-sub { font-size: 12px; color: var(--text3); margin-top: 4px; }
+input[type=file] { display: none; }
+
+/* Toggles */
+.section-label {
+  font-size: 13px;
+  color: var(--text2);
+  margin-bottom: 10px;
+}
+.toggles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 1.5rem;
+}
+.toggle-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  font-size: 13px;
+  font-family: var(--font);
+  color: var(--text2);
+  background: transparent;
+  transition: all 0.15s;
+  user-select: none;
+}
+.toggle-chip.on {
+  background: var(--surface);
+  border-color: var(--border2);
+  color: var(--text);
+}
+.toggle-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--border2);
+  transition: background 0.15s;
+}
+.toggle-chip.on .toggle-dot { background: var(--text); }
+
+/* Generate button */
+.gen-btn {
+  width: 100%;
+  padding: 13px;
+  border: none;
+  border-radius: var(--radius);
+  background: var(--accent);
+  color: var(--accent-fg);
+  font-family: var(--font);
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.15s;
+  margin-bottom: 2rem;
+  letter-spacing: -0.1px;
+}
+.gen-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+.gen-btn:hover:not(:disabled) { opacity: 0.85; }
+
+/* Results */
+.results { display: flex; flex-direction: column; gap: 12px; }
+
+.result-card {
+  background: var(--surface);
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+.result-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 11px 16px;
+  border-bottom: 0.5px solid var(--border);
+}
+.result-title {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text2);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.copy-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-family: var(--font);
+  color: var(--text3);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: var(--radius);
+  transition: all 0.15s;
+}
+.copy-btn:hover { background: var(--surface2); color: var(--text); }
+.copy-btn.copied { color: var(--success); }
+.result-body { padding: 14px 16px; }
+
+.result-textarea {
+  width: 100%;
+  border: none;
+  background: transparent;
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--text);
+  resize: vertical;
+  min-height: 72px;
+  font-family: var(--font);
+  outline: none;
+}
+
+/* Tags */
+.tags-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+.tag-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  background: var(--tag-bg);
+  border: 0.5px solid var(--tag-border);
+  border-radius: var(--radius-pill);
+  font-size: 13px;
+  color: var(--text);
+}
+.tag-remove {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  color: var(--text3);
+  font-size: 14px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  transition: color 0.15s;
+}
+.tag-remove:hover { color: var(--danger); }
+.add-tag-form {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 0.5px solid var(--border);
+}
+.add-tag-input {
+  flex: 1;
+  font-size: 13px;
+  font-family: var(--font);
+  padding: 6px 12px;
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--surface2);
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.15s;
+}
+.add-tag-input:focus { border-color: var(--border2); }
+.add-tag-input::placeholder { color: var(--text3); }
+.add-tag-btn {
+  font-size: 12px;
+  font-family: var(--font);
+  color: var(--text2);
+  background: none;
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius-pill);
+  padding: 6px 14px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s;
+}
+.add-tag-btn:hover { color: var(--text); border-color: var(--border2); }
+
+/* Loading */
+.loading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 2rem 1rem;
+  color: var(--text2);
+  font-size: 14px;
+}
+.spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--border2);
+  border-top-color: var(--text);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.empty-state {
+  text-align: center;
+  padding: 2.5rem 1rem;
+  color: var(--text3);
+  font-size: 14px;
+}
+.error-state {
+  text-align: center;
+  padding: 1.5rem;
+  color: var(--danger);
+  font-size: 14px;
+  background: var(--surface);
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+
+/* SVG icons inline */
+.ico { width: 14px; height: 14px; display: inline-block; vertical-align: -2px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="header">
+    <h1>AI Product Descriptor</h1>
+    <p>Upload a product image — get captions, tags, and descriptions instantly.</p>
+  </div>
+
+  <!-- API Key -->
+  <div class="apikey-section">
+    <div class="apikey-header">
+      <span class="apikey-label">OpenRouter API Key</span>
+      <span class="apikey-status" id="keyStatus">Using default key</span>
+    </div>
+    <div class="apikey-row">
+      <input type="password" class="apikey-input" id="apikeyInput" placeholder="sk-or-v1-... (optional, use your own key)" />
+      <button class="apikey-save-btn" onclick="saveKey()">Save</button>
+      <button class="apikey-clear-btn" id="clearKeyBtn" onclick="clearKey()" style="display:none">Remove</button>
+    </div>
+    <p class="apikey-hint">
+      Optional — get a free key at <a href="https://openrouter.ai" target="_blank" rel="noopener">openrouter.ai</a>.
+      Your key is stored only in your browser and never sent to our server.
+    </p>
+  </div>
+
+  <!-- Language -->
+  <div class="lang-toggle">
+    <button class="lang-btn active" data-lang="en" onclick="setLang('en')">🇬🇧 English</button>
+    <button class="lang-btn" data-lang="id" onclick="setLang('id')">🇮🇩 Indonesia</button>
+  </div>
+
+  <!-- Upload -->
+  <div class="upload-zone" id="uploadZone" onclick="document.getElementById('fileInput').click()">
+    <div class="upload-overlay" id="uploadOverlay">
+      <svg class="ico" style="width:16px;height:16px" viewBox="0 0 24 24"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 .49-3"/></svg>
+      Change image
+    </div>
+    <div id="uploadPlaceholder">
+      <div class="upload-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:36px;height:36px;margin:0 auto 10px">
+          <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/>
+        </svg>
+      </div>
+      <div class="upload-label">Click or drag & drop your product image</div>
+      <div class="upload-sub">JPG, PNG, WEBP — max 10MB</div>
+    </div>
+    <img id="previewImg" style="display:none" alt="Product preview" />
+  </div>
+  <input type="file" id="fileInput" accept="image/*" />
+
+  <!-- Output toggles -->
+  <p class="section-label">Generate:</p>
+  <div class="toggles" id="toggles">
+    <button class="toggle-chip on" data-key="caption"><span class="toggle-dot"></span>Caption</button>
+    <button class="toggle-chip on" data-key="tags"><span class="toggle-dot"></span>Tags</button>
+    <button class="toggle-chip on" data-key="description"><span class="toggle-dot"></span>Description</button>
+    <button class="toggle-chip" data-key="seo"><span class="toggle-dot"></span>SEO Meta</button>
+    <button class="toggle-chip" data-key="alt"><span class="toggle-dot"></span>Alt Text</button>
+  </div>
+
+  <button class="gen-btn" id="genBtn" onclick="generate()" disabled>
+    <span id="genBtnLabel">Generate — upload an image first</span>
+  </button>
+
+  <div id="results" class="results">
+    <div class="empty-state">Your results will appear here.</div>
+  </div>
+
+</div>
+
+<script>
+// ─── State ────────────────────────────────────────────────
+let lang = 'en';
+let imageBase64 = null;
+let imageMime = null;
+const activeToggles = new Set(['caption', 'tags', 'description']);
+
+// ─── i18n ─────────────────────────────────────────────────
+const i18n = {
+  en: {
+    caption: 'Caption', tags: 'Tags', description: 'Description',
+    seo: 'SEO Meta', alt: 'Alt Text',
+    addTag: '+ Add tag', addPlaceholder: 'New tag...',
+    copy: 'Copy', copied: 'Copied!',
+    generating: 'Generating...',
+    btnReady: 'Generate',
+    btnNoImg: 'Generate — upload an image first',
+    btnNoToggle: 'Generate — select at least one output',
+    empty: 'Your results will appear here.',
+    ownKey: 'Using your key',
+    defaultKey: 'Using default key',
+  },
+  id: {
+    caption: 'Caption', tags: 'Tag', description: 'Deskripsi',
+    seo: 'SEO Meta', alt: 'Alt Text',
+    addTag: '+ Tambah tag', addPlaceholder: 'Tag baru...',
+    copy: 'Salin', copied: 'Disalin!',
+    generating: 'Sedang membuat...',
+    btnReady: 'Generate',
+    btnNoImg: 'Generate — upload gambar dulu',
+    btnNoToggle: 'Generate — pilih minimal satu output',
+    empty: 'Hasil akan muncul di sini.',
+    ownKey: 'Pakai key kamu',
+    defaultKey: 'Pakai key default',
+  }
+};
+const t = k => i18n[lang][k] || k;
+
+// ─── API Key ──────────────────────────────────────────────
+function loadKey() {
+  const key = localStorage.getItem('or_api_key') || '';
+  const input = document.getElementById('apikeyInput');
+  const clearBtn = document.getElementById('clearKeyBtn');
+  const status = document.getElementById('keyStatus');
+  if (key) {
+    input.value = key;
+    clearBtn.style.display = 'inline-block';
+    status.textContent = t('ownKey');
+    status.className = 'apikey-status own';
+  } else {
+    input.value = '';
+    clearBtn.style.display = 'none';
+    status.textContent = t('defaultKey');
+    status.className = 'apikey-status';
+  }
+}
+
+function saveKey() {
+  const val = document.getElementById('apikeyInput').value.trim();
+  if (val) {
+    localStorage.setItem('or_api_key', val);
+  } else {
+    localStorage.removeItem('or_api_key');
+  }
+  loadKey();
+}
+
+function clearKey() {
+  localStorage.removeItem('or_api_key');
+  loadKey();
+}
+
+// ─── Language ─────────────────────────────────────────────
+function setLang(l) {
+  lang = l;
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.dataset.lang === l));
+  updateBtn();
+  loadKey();
+}
+
+// ─── Upload ───────────────────────────────────────────────
+const uploadZone = document.getElementById('uploadZone');
+const fileInput  = document.getElementById('fileInput');
+const previewImg = document.getElementById('previewImg');
+const placeholder = document.getElementById('uploadPlaceholder');
+
+uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.classList.add('drag'); });
+uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('drag'));
+uploadZone.addEventListener('drop', e => {
+  e.preventDefault();
+  uploadZone.classList.remove('drag');
+  const f = e.dataTransfer.files[0];
+  if (f && f.type.startsWith('image/')) loadImage(f);
+});
+fileInput.addEventListener('change', () => {
+  if (fileInput.files[0]) loadImage(fileInput.files[0]);
+});
+
+function loadImage(file) {
+  imageMime = file.type;
+  const reader = new FileReader();
+  reader.onload = e => {
+    imageBase64 = e.target.result.split(',')[1];
+    previewImg.src = e.target.result;
+    previewImg.style.display = 'block';
+    placeholder.style.display = 'none';
+    uploadZone.classList.add('has-img');
+    updateBtn();
+  };
+  reader.readAsDataURL(file);
+}
+
+// ─── Toggles ──────────────────────────────────────────────
+document.querySelectorAll('.toggle-chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    const k = chip.dataset.key;
+    if (activeToggles.has(k)) { activeToggles.delete(k); chip.classList.remove('on'); }
+    else { activeToggles.add(k); chip.classList.add('on'); }
+    updateBtn();
+  });
+});
+
+function updateBtn() {
+  const btn = document.getElementById('genBtn');
+  const lbl = document.getElementById('genBtnLabel');
+  if (!imageBase64) { btn.disabled = true; lbl.textContent = t('btnNoImg'); return; }
+  if (!activeToggles.size) { btn.disabled = true; lbl.textContent = t('btnNoToggle'); return; }
+  btn.disabled = false;
+  lbl.textContent = t('btnReady');
+}
+
+// ─── Generate ─────────────────────────────────────────────
+async function generate() {
+  const btn = document.getElementById('genBtn');
+  const lbl = document.getElementById('genBtnLabel');
+  const resultsEl = document.getElementById('results');
+  btn.disabled = true;
+  lbl.textContent = t('generating');
+  resultsEl.innerHTML = `<div class="loading"><div class="spinner"></div><span>${t('generating')}</span></div>`;
+
+  const selected = [...activeToggles];
+  const langName = lang === 'en' ? 'English' : 'Indonesian';
+
+  const parts = [];
+  if (selected.includes('caption'))     parts.push('"caption": "Short 1-2 sentence product caption"');
+  if (selected.includes('tags'))        parts.push('"tags": ["tag1","tag2","tag3","tag4","tag5","tag6","tag7","tag8"]');
+  if (selected.includes('description')) parts.push('"description": "2-3 paragraph product description covering appearance, use case, and benefits"');
+  if (selected.includes('seo'))         parts.push('"seo_title": "SEO meta title under 60 chars", "seo_description": "SEO meta description under 160 chars"');
+  if (selected.includes('alt'))         parts.push('"alt_text": "Concise alt text for accessibility"');
+
+  const systemPrompt = `You are a professional e-commerce copywriter. Analyze the product image and generate content in ${langName}. Respond ONLY with a valid JSON object with these fields: { ${parts.join(', ')} }. No markdown, no code blocks, no explanation — just the raw JSON object.`;
+
+  const userKey = localStorage.getItem('or_api_key');
+
+  try {
+    let responseData;
+
+    if (userKey) {
+      // ── Client-side: use user's own key direct to OpenRouter ──
+      const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + userKey,
+          'HTTP-Referer': window.location.origin,
+          'X-Title': 'AI Product Descriptor',
+        },
+        body: JSON.stringify({
+          model: 'openrouter/free',
+          max_tokens: 1000,
+          messages: [{
+            role: 'user',
+            content: [
+              { type: 'image_url', image_url: { url: 'data:' + imageMime + ';base64,' + imageBase64 } },
+              { type: 'text', text: systemPrompt }
+            ]
+          }]
+        })
+      });
+      responseData = await res.json();
+      const raw = responseData.choices?.[0]?.message?.content || '';
+      const clean = raw.replace(/```json|```/g, '').trim();
+      renderResults(JSON.parse(clean), selected);
+
+    } else {
+      // ── Server-side: proxy through api.php using default key ──
+      const res = await fetch('api.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'openrouter/free',
+          system: systemPrompt,
+          messages: [{
+            role: 'user',
+            content: [
+              { type: 'image_url', image_url: { url: 'data:' + imageMime + ';base64,' + imageBase64 } },
+              { type: 'text', text: 'Generate product content for this image.' }
+            ]
+          }]
+        })
+      });
+      responseData = await res.json();
+      const raw = responseData.choices?.[0]?.message?.content || '';
+      const clean = raw.replace(/```json|```/g, '').trim();
+      renderResults(JSON.parse(clean), selected);
+    }
+
+  } catch (err) {
+    resultsEl.innerHTML = `<div class="error-state">Something went wrong. Please check your API key or try again.<br><small style="opacity:0.7;font-size:11px">${err.message}</small></div>`;
+  }
+
+  btn.disabled = false;
+  updateBtn();
+}
+
+// ─── Render ───────────────────────────────────────────────
+function renderResults(data, selected) {
+  const el = document.getElementById('results');
+  el.innerHTML = '';
+  const order = ['caption', 'tags', 'description', 'seo', 'alt'];
+  order.filter(k => selected.includes(k)).forEach(key => {
+    if (key === 'tags' && data.tags)             { el.appendChild(makeTagsCard(data.tags)); return; }
+    if (key === 'caption' && data.caption)       { el.appendChild(makeTextCard('caption', data.caption)); return; }
+    if (key === 'description' && data.description) { el.appendChild(makeTextCard('description', data.description)); return; }
+    if (key === 'seo' && (data.seo_title || data.seo_description)) {
+      el.appendChild(makeTextCard('seo', `${data.seo_title}\n\n${data.seo_description}`)); return;
+    }
+    if (key === 'alt' && data.alt_text)          { el.appendChild(makeTextCard('alt', data.alt_text)); return; }
+  });
+}
+
+function makeTextCard(key, value) {
+  const card = document.createElement('div');
+  card.className = 'result-card';
+  const id = 'ta_' + key + '_' + Date.now();
+  card.innerHTML = `
+    <div class="result-header">
+      <span class="result-title">${t(key)}</span>
+      <button class="copy-btn" id="cb_${id}" onclick="copyText('${id}','cb_${id}')">
+        <svg class="ico" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        <span>${t('copy')}</span>
+      </button>
+    </div>
+    <div class="result-body">
+      <textarea class="result-textarea" id="${id}" spellcheck="false">${value}</textarea>
+    </div>`;
+  return card;
+}
+
+function makeTagsCard(tags) {
+  const card = document.createElement('div');
+  card.className = 'result-card';
+  const cid = 'tags_' + Date.now();
+  card.innerHTML = `
+    <div class="result-header">
+      <span class="result-title">${t('tags')}</span>
+      <button class="copy-btn" id="cb_${cid}" onclick="copyTags('${cid}','cb_${cid}')">
+        <svg class="ico" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        <span>${t('copy')}</span>
+      </button>
+    </div>
+    <div class="result-body">
+      <div class="tags-container" id="${cid}"></div>
+      <div class="add-tag-form">
+        <input class="add-tag-input" type="text" placeholder="${t('addPlaceholder')}" id="ai_${cid}"
+          onkeydown="if(event.key==='Enter')addTag('${cid}')" />
+        <button class="add-tag-btn" onclick="addTag('${cid}')">${t('addTag')}</button>
+      </div>
+    </div>`;
+  const container = card.querySelector('#' + cid);
+  tags.forEach(tag => container.appendChild(makeChip(tag)));
+  return card;
+}
+
+function makeChip(tag) {
+  const chip = document.createElement('span');
+  chip.className = 'tag-chip';
+  chip.innerHTML = `${escHtml(tag)}<button class="tag-remove" aria-label="Remove" onclick="this.parentElement.remove()">
+    <svg class="ico" style="width:12px;height:12px" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
+  </button>`;
+  return chip;
+}
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function addTag(cid) {
+  const input = document.getElementById('ai_' + cid);
+  const val = input.value.trim();
+  if (!val) return;
+  document.getElementById(cid).appendChild(makeChip(val));
+  input.value = '';
+  input.focus();
+}
+
+function copyText(taId, btnId) {
+  navigator.clipboard.writeText(document.getElementById(taId).value)
+    .then(() => flashCopied(btnId));
+}
+
+function copyTags(cid, btnId) {
+  const chips = document.querySelectorAll('#' + cid + ' .tag-chip');
+  const text = [...chips].map(c => c.childNodes[0].textContent.trim()).join(', ');
+  navigator.clipboard.writeText(text).then(() => flashCopied(btnId));
+}
+
+function flashCopied(btnId) {
+  const btn = document.getElementById(btnId);
+  btn.classList.add('copied');
+  btn.querySelector('span').textContent = t('copied');
+  setTimeout(() => {
+    btn.classList.remove('copied');
+    btn.querySelector('span').textContent = t('copy');
+  }, 1800);
+}
+
+// ─── Init ─────────────────────────────────────────────────
+loadKey();
+</script>
+</body>
+</html>
